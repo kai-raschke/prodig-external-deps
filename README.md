@@ -1,4 +1,4 @@
-# Prodig-External-Extras
+# Prodig-External-Deps
 
 Provides a base package for other external task microservices to minimize update handling effort.
 

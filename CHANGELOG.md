@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- enable graylog with env variable
+
 ## 0.3.0
 
 - Refactoring

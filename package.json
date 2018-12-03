@@ -1,6 +1,6 @@
 {
   "name": "prodig-external-deps",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Support package for prodig microservices.",
   "main": "index.js",
   "author": "Kai Raschke",

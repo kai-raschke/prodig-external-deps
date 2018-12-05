@@ -74,7 +74,7 @@ function init(options){
         interval: INTERVAL,
         lockDuration: LOCK_DURATION,
         autoPoll: AUTO_POLL,
-        interceptors: interceptors,
+        interceptors: (interceptors.length > 0 ? interceptors : undefined),
         use: use
     };
 

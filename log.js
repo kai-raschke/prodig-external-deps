@@ -7,7 +7,7 @@ let logger, streams = [];
 try{
     //Try to get parents app name
     let pckg;
-    let parentPackage = path.join(__dirname, '../../package.json');
+    let parentPackage = path.join(__dirname, '../../../package.json');
     let parentPackageExists = existsSync(parentPackage);
     if(parentPackageExists)
         pckg = require(parentPackage);
@@ -22,7 +22,7 @@ try{
         }
     );
 
-    let logPath = path.join(__dirname, '../../logs');
+    let logPath = path.join(__dirname, '../../../logs');
     try{
         mkdirSync(logPath);
     }

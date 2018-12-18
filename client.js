@@ -1,31 +1,17 @@
 'use strict';
 
-const logParent = require('./log'),
-      log       = logParent.child({component: 'camunda-external-client'}),
-      path      = require('path');
-const clientLog = require('./clientLog');
 const { Client, BasicAuthInterceptor } = require('camunda-external-task-client-js');
 const { util } = require('camunda-external-task-client-js/lib/__internal/utils');
+const logParent = require('./log'),
+      log       = logParent.child({component: 'camunda-external-client'});
+const clientLog = require('./clientLog');
 
 function init(options){
     options = options || {};
     let config, //camunda-external-task-client config
         interceptors = [],
-        use = [clientLog], //Always use clientLog
-        MAX_TASK, ASYNC_RESPONSE_TIMEOUT, AUTH, INTERVAL, AUTO_POLL, LOCK_DURATION;
-
-    //If the app is not started by pm2, we will try to inject the env variables from app.json
-    if(!process.env.NODE_ENV){
-        try{
-            let appJson = require(path.resolve(__dirname, '..', '..', '..') + path.sep + 'app.json'); //Module within node_modules/org.prodig.external.extras
-            let env = appJson.apps[0].env;
-            process.env = Object.assign(process.env, env);
-        } catch(ex){ console.log(ex); }
-    }
-    else{
-        //The app can be started without env variables through options, options will be pushed to global process.env
-        process.env = Object.assign(process.env, options.env);
-    }
+        use,
+        MAX_TASK, ASYNC_RESPONSE_TIMEOUT, AUTH, INTERVAL, AUTO_POLL, LOCK_DURATION, LOG_CAMUNDA, LOG_FILE, LOG_GRAYLOG;
 
     //Parsing environment variables which default to string but need a different type
     try{
@@ -35,6 +21,9 @@ function init(options){
         LOCK_DURATION = (isNaN(parseInt(process.env.LOCK_DURATION)) ? 50000 : parseInt(process.env.LOCK_DURATION));
         AUTH = (process.env.AUTH === 'true');
         AUTO_POLL = (process.env.AUTO_POLL === 'true');
+        LOG_CAMUNDA = (process.env.LOG_CAMUNDA === 'true');
+        LOG_FILE = (process.env.LOG_FILE === 'false' ? false : true); //use bunyan file log if not explicit turned off
+        LOG_GRAYLOG = (process.env.LOG_GRAYLOG === 'true');
     } catch(ex){
         log.error(ex);
     }
@@ -49,13 +38,9 @@ function init(options){
         interceptors.push(basicAuth);
     }
 
-    //Add optional interceptors
-    if(
-        options.interceptors &&
-        !util.isFunction(options.interceptors) &&
-        !util.isArrayOfFunctions(options.interceptors)
-    ){
-        interceptors = interceptors.concat(options.interceptors);
+    if(LOG_CAMUNDA){
+        use = use || [];
+        use = use.concat([clientLog]);
     }
 
     //Add optional middleware for use
@@ -64,7 +49,17 @@ function init(options){
         !util.isFunction(options.use) &&
         !util.isArrayOfFunctions(options.use)
     ){
+        use = use || [];
         use = use.concat(options.use);
+    }
+
+    //Add optional interceptors
+    if(
+        options.interceptors &&
+        !util.isFunction(options.interceptors) &&
+        !util.isArrayOfFunctions(options.interceptors)
+    ){
+        interceptors = interceptors.concat(options.interceptors);
     }
 
     config = {

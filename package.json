@@ -1,6 +1,6 @@
 {
   "name": "@kai-raschke/prodig-external-deps",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Support package for prodig microservices",
   "main": "index.js",
   "author": "Kai Raschke",
@@ -8,7 +8,8 @@
   "dependencies": {
     "bunyan": "1.8.12",
     "camunda-external-task-client-js": "^1.1.1",
-    "gelf-pro": "^1.2.2",
-    "request": "^2.88.0"
-  }
+    "request": "^2.88.0",
+    "gelf-pro": "^1.2.2"
+  },
+  "repository": "https://github.com/kai-raschke/prodig-external-deps"
 }

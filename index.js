@@ -2,7 +2,7 @@
 const path      = require('path');
 
 function init(options){
-//If the app is not started by pm2, we will try to inject the env variables from app.json
+    //If the app is not started by pm2, we will try to inject the env variables from app.json
     if(!process.env.NODE_ENV){
         try{
             let appJson = require(path.resolve(__dirname, '..', '..', '..') + path.sep + 'app.json'); //Module within node_modules/org.prodig.external.extras
@@ -16,7 +16,7 @@ function init(options){
         process.env = Object.assign(process.env, options);
     }
 
-    const client = require('./client');
+    const client = require('./client').init(options);
     const log = require('./log');
     const lib = require('./lib');
     const gray = require('./gray');

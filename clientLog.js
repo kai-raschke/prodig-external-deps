@@ -2,7 +2,7 @@
 const logParent = require('./log'),
     log         = logParent.child({component: 'camunda-external-client'});
 
-module.exports = function(client){
+module.exports = (client) => {
     client.on("subscribe", topic => {
         log.info('Subscribed ' + topic);
     });
@@ -12,7 +12,7 @@ module.exports = function(client){
     });
 
     client.on("poll:start", () => {
-        log.info('polling');
+        log.debug('polling');
     });
 
     client.on("poll:stop", () => {
@@ -20,7 +20,7 @@ module.exports = function(client){
     });
 
     client.on("poll:success", tasks => {
-        log.info('task ' + tasks);
+        log.debug('task ' + tasks);
     });
 
     client.on("poll:error", e => {
